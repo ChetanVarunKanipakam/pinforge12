@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PinForge – ARM Cortex-M Simulator</title>
+<style>
+:root{box-sizing:border-box;color-scheme:dark;--bg:#0f1419;--pn:#161c24;--pn2:#121920;--tx:#d7dde4;--mu:#8a97a8;--bd:#263040;--bl:#2f6fed;--gr:#1fa85a;--rd:#d64545;--ac:#3ddc97;--gridc:#1b2430}
+html,body{height:100%}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:13px/1.45 Inter,system-ui,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column;height:100dvh;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+button,select,input{font:inherit;color:inherit}
+#top{display:flex;align-items:center;gap:8px;padding:0 12px;height:52px;background:var(--pn);border-bottom:1px solid var(--bd);flex:none}
+.logo{font-size:15px;letter-spacing:.3px;margin-right:6px}.logo span{color:var(--ac)}
+#top select,.gh{height:32px;background:var(--bg);border:1px solid #2c384a;border-radius:7px;padding:0 10px;cursor:pointer;max-width:220px}
+.sp{flex:1}
+.btn{display:flex;align-items:center;gap:7px;height:34px;padding:0 14px;border:0;border-radius:7px;color:#fff;font-weight:600;cursor:pointer}
+.btn:disabled{opacity:.4;cursor:not-allowed}.btn.blue{background:var(--bl)}.btn.green{background:var(--gr)}.btn.red{background:var(--rd)}
+.chip{padding:3px 10px;border-radius:99px;font-size:12px;white-space:nowrap;background:#1c2a3f;color:#7fb0ff}.chip.run{background:#10332d;color:#7ee2c0}.chip.warn{background:#3a2f12;color:#f0c76a}.chip.ok{background:#14301f;color:#7ee2a8}.chip.err{background:#3a1717;color:#ff9a9a}
+#views{display:flex;align-items:center;gap:2px;padding:0 10px;background:var(--pn2);border-bottom:1px solid var(--bd);flex:none;height:38px}
+.tb{padding:0 14px;height:38px;background:none;border:0;color:var(--mu);cursor:pointer}.tb.a{color:var(--tx);box-shadow:inset 0 -2px var(--ac)}
+#work{flex:1;display:flex;min-height:0}
+#codePane,#circPane{display:flex;flex-direction:column;min-width:0;min-height:0}
+#codePane{flex:0 0 42%;border-right:1px solid var(--bd)}#circPane{flex:1;position:relative}
+#work[data-v=code] #circPane{display:none}#work[data-v=circuit] #codePane{display:none}#work[data-v=code] #codePane{flex:1;border:0}
+.ftabs{display:flex;background:var(--pn);color:var(--mu);flex:none}.ftabs span{padding:8px 14px;cursor:pointer}.ftabs span.a{color:var(--tx);box-shadow:inset 0 -2px var(--ac)}
+#note{padding:5px 12px;font-size:11px;color:var(--mu);background:var(--pn2);border-bottom:1px solid var(--bd);flex:none}
+.ed{flex:1;display:flex;min-height:0;background:var(--bg)}
+#gut{margin:0;padding:12px 8px 12px 12px;text-align:right;color:#5b6a7c;font:13px/20px ui-monospace,Menlo,Consolas,monospace;overflow:hidden;user-select:none}
+.cw{position:relative;flex:1;min-width:0}
+#hl,#code{position:absolute;inset:0;margin:0;padding:12px;font:13px/20px ui-monospace,Menlo,Consolas,monospace;white-space:pre;tab-size:2;border:0;outline:0}
+#hl{overflow:hidden;pointer-events:none}#code{background:transparent;color:transparent;caret-color:#fff;resize:none;overflow:auto;z-index:1}#code::selection{background:#264f78}
+.c1{color:#6a9955}.c2{color:#ce9178}.c3{color:#569cd6}.c4{color:#dcdcaa}.c5{color:#4ec9b0}.c6{color:#b5cea8}
+#cwrap{flex:1;position:relative;min-height:0;overflow:hidden;background-image:linear-gradient(var(--gridc) 1px,transparent 1px),linear-gradient(90deg,var(--gridc) 1px,transparent 1px);background-size:20px 20px;background-color:#0e1319}
+#cv{width:100%;height:100%;display:block;touch-action:none}
+#lockb{display:none;position:absolute;top:10px;right:10px;align-items:center;gap:8px;padding:7px 12px;border-radius:99px;background:#10332dee;color:#7ee2c0;font-size:12px;pointer-events:none}
+#circPane.locked #lockb{display:flex}
+#lockb .lk{display:inline}#hint{position:absolute;left:12px;bottom:10px;color:#6b7a8f;font-size:12px;pointer-events:none}#circPane.locked #hint{display:none}
+#plus{position:absolute;right:16px;bottom:16px;width:48px;height:48px;border-radius:99px;border:0;background:var(--bl);color:#fff;font-size:28px;line-height:1;cursor:pointer;box-shadow:0 4px 14px #0008}
+#plus:disabled{background:#2a3647;color:#6b7a8f;cursor:not-allowed;box-shadow:none}
+#pmenu{display:none;position:absolute;right:16px;bottom:72px;width:240px;background:var(--pn);border:1px solid var(--bd);border-radius:10px;padding:8px;box-shadow:0 8px 24px #000a;z-index:5}
+#pmenu.on{display:block}#q{width:100%;padding:7px 9px;margin-bottom:6px;background:var(--bg);border:1px solid #2c384a;border-radius:7px}
+#pl button{display:flex;justify-content:space-between;width:100%;background:none;border:0;padding:8px 9px;border-radius:6px;cursor:pointer;text-align:left}#pl button:hover{background:var(--bl)}#pl span{color:var(--mu);font-size:11px}
+#insp{flex:none;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:6px 12px;background:var(--pn);border-top:1px solid var(--bd);color:var(--mu);font-size:12px;min-height:42px}
+#insp b{color:var(--tx)}#insp select,#insp input[type=number]{background:var(--bg);border:1px solid #2c384a;border-radius:6px;padding:3px 6px}
+#insp button{background:#243041;border:0;border-radius:6px;padding:5px 10px;cursor:pointer}#insp button:disabled{opacity:.4;cursor:not-allowed}#insp button.sw{width:20px;height:20px;padding:0;border:2px solid #0006;border-radius:99px}
+#dock{flex:none;height:230px;display:flex;flex-direction:column;background:#0a0e13;border-top:1px solid var(--bd)}#dock.min{height:38px}
+#dtabs{display:flex;align-items:center;background:var(--pn2);border-bottom:1px solid var(--bd);flex:none;overflow-x:auto}
+#dock.min #dp{display:none}#dp{flex:1;min-height:0;position:relative}
+.dpane{display:none;position:absolute;inset:0;overflow:auto}.dpane.a{display:flex;flex-direction:column}
+#con{flex:1;overflow:auto;padding:8px 12px;font:12px/1.55 ui-monospace,monospace;color:#7ee2a8;white-space:pre-wrap}
+#sr{display:flex;border-top:1px solid var(--bd);flex:none}#si{flex:1;background:transparent;border:0;padding:7px 12px;font:12px ui-monospace,monospace;outline:0}#sr button{background:#243041;border:0;padding:0 14px;cursor:pointer}
+#regs,#blog,#i2cmon{margin:0;padding:10px 14px;font:12px/1.65 ui-monospace,monospace;color:#9fb6d6;white-space:pre}#blog{color:#a9c4a9;white-space:pre-wrap}
+#laTools{display:flex;gap:10px;align-items:center;padding:5px 12px;color:var(--mu);font-size:12px;flex:none}#la{flex:1;width:100%;min-height:0;display:block}
+#status{display:flex;align-items:center;gap:18px;padding:0 12px;height:26px;background:#1b2330;color:var(--mu);font-size:12px;flex:none;overflow:hidden;white-space:nowrap}
+.pin{cursor:crosshair}.pin:hover{stroke:#fff;stroke-width:2}
+#circPane.locked .pin{cursor:not-allowed}
+@media(max-width:900px){#lockb .lk{display:none}#lockb{top:6px;right:6px;padding:5px 10px}#codePane{flex:1}#top{height:auto;flex-wrap:wrap;padding:6px 8px;row-gap:6px;column-gap:6px}#top .sp{display:none}.logo{order:0;margin-right:auto}#bBuild,#bRun,#bStop{order:1;min-width:46px;height:40px;justify-content:center;padding:0 12px}.btn span.lb{display:none}#ex{order:2;flex:1;min-width:0;max-width:none}#ld{order:2}#chipBuild{order:3}#chipMode{display:none}#dock{height:34vh}#work[data-v=split]{flex-direction:column}#work[data-v=split] #codePane{flex:1 1 0;border:0;border-bottom:1px solid var(--bd);min-height:0}#work[data-v=split] #circPane{flex:1 1 0;min-height:0}.hideS{display:none}#plus{width:52px;height:52px}#insp{font-size:12px}}
+html,body{overflow-x:hidden}
+</style></head><body>
+<header id="top"><b class="logo">Pin<span>Forge</span></b>
+<select id="brd" title="Board"></select><select id="ex" title="Project / example"></select><button class="gh" id="ld" title="Load a .bin, .elf or .hex">Load…</button><input type="file" id="fl" accept=".bin,.elf,.hex" hidden>
+<span class="sp"></span><span class="chip" id="chipMode">Edit mode</span><span class="chip" id="chipBuild">Ready</span>
+<button class="btn blue" id="bBuild" title="Compile main.c (Ctrl+B)"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 14l6-6M7 3l6 6-2 2-6-6z" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="lb">Build</span></button>
+<button class="btn green" id="bRun" title="Run the last build (Ctrl+Enter)"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2l9 6-9 6z" fill="#fff"/></svg><span class="lb">Run</span></button>
+<button class="btn red" id="bStop" disabled title="Stop the simulation"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3h10v10H3z" fill="#fff"/></svg><span class="lb">Stop</span></button></header>
+<nav id="views"><button class="tb a" data-v="split" id="vsplit">Split</button><button class="tb" data-v="code">Code</button><button class="tb" data-v="circuit">Circuit</button><span class="sp"></span><span id="tm" class="hideS" style="font:12px ui-monospace,monospace;color:var(--mu)">00:00.000</span></nav>
+<main id="work" data-v="split">
+<section id="codePane"><div class="ftabs"><span class="a" data-f="c">main.c</span><span data-f="json">diagram.json</span></div><div id="note"></div>
+<div class="ed"><pre id="gut"></pre><div class="cw"><pre id="hl"></pre><textarea id="code" spellcheck="false" autocapitalize="off" aria-label="Code editor"></textarea></div></div></section>
+<section id="circPane"><div id="cwrap"><svg id="cv" viewBox="0 0 760 520" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Circuit canvas"><g id="cvb" pointer-events="none"></g><g id="cvd"></g></svg>
+<div id="lockb"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 7h8v7H4zM6 7V5a2 2 0 0 1 4 0v2" stroke="#7ee2c0" stroke-width="1.5" fill="none"/></svg>Circuit locked while running<span class="lk"> · press Stop to edit</span></div>
+<div id="hint">Click a pin, then another pin to wire · wires snap to the 20 px grid</div>
+<div id="pmenu"><input id="q" placeholder="Search parts…" autocomplete="off" aria-label="Search parts"><div id="pl"></div></div>
+<button id="plus" title="Add a part" aria-label="Add a part">+</button></div><div id="insp"></div></section></main>
+<section id="dock"><div id="dtabs"><button class="tb a" data-d="serial">Serial Monitor</button><button class="tb" data-d="regs">CPU Registers</button><button class="tb" data-d="logic">Logic Analyzer</button><button class="tb" data-d="i2c">I²C Monitor</button><button class="tb" data-d="build">Build Log</button><span class="sp"></span><button class="tb" id="dmin" title="Collapse / expand">&#9662;</button></div>
+<div id="dp"><div class="dpane a" id="p-serial"><div id="con"></div><div id="sr"><input id="si" placeholder="Send to Serial (USART1)…" autocomplete="off"><button id="sb">Send</button></div></div>
+<div class="dpane" id="p-regs"><pre id="regs">Not running.</pre></div>
+<div class="dpane" id="p-logic"><div id="laTools"><span>Window</span><select id="laWin"><option value="0.001">1 ms</option><option value="0.01">10 ms</option><option value="0.1">100 ms</option><option value="0.5">0.5 s</option><option value="2" selected>2 s</option><option value="10">10 s</option></select><label style="display:flex;gap:5px;align-items:center;cursor:pointer"><input type="checkbox" id="laHold"> Hold</label><span id="laInfo"></span></div><canvas id="la"></canvas></div>
+<div class="dpane" id="p-i2c"><pre id="i2cmon">Run a program that uses I2C1 / I2C2 to see the bus traffic here.</pre></div>
+<div class="dpane" id="p-build"><pre id="blog">No build yet.</pre></div></div></section>
+<footer id="status"><span id="stChip">STM32F103C8 · 8 MHz</span><span id="stFlash">Flash –</span><span class="sp"></span><span id="stRun">Stopped</span></footer>

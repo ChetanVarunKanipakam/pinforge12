@@ -1,0 +1,42 @@
+
+PINFORGE-LPC1768-VALIDATION 1
+R1 PCONP at entry = 0x042887DE
+R2 FLASHCFG at entry = 0x0000303A
+R3 PLL0STAT at entry = 0x00000000
+R4 SCS at entry = 0x00000000
+R5 CLKSRCSEL at entry = 0x00000000
+R6 CCLKCFG at entry = 0x00000000
+R7 PCLKSEL0 at entry = 0x00000000
+R8 PCLKSEL1 at entry = 0x00000000
+R9 RSID at entry = 0x00000001
+R10 PINSEL0 at entry = 0x00000000
+R11 PINMODE0 at entry = 0x00000000
+R12 FIO0DIR at entry = 0x00000000
+R13 CPUID = 0x412FC230
+R14 NVIC priority readback of 31<<3 = 0x000000F8
+U1 UART0 FDR = 0x000000C1
+U2 UART0 TER = 0x00000080
+U3 UART0 IIR = 0x000000C1
+T1 Timer0 PCLK=CCLK/4 PR=0 MR0=999, 8 periods [cycles] = 32008
+T2 Timer0 PCLK=CCLK/4 PR=3 MR0=999, 8 periods [cycles] = 128008
+T3 Timer0 PCLK=CCLK/4 PR=0 MR0=0, 8 flags [cycles] = 136
+T4 Timer0 PCLK=CCLK PR=0 MR0=999, 8 periods [cycles] = 8000
+T5 Timer0 TC after 4000 cycles (PR=0, PCLK=CCLK/4) = 1003
+P1 PLL0STAT right after enabling = 0x01000022
+P2 PLL0 lock time [CPU cycles at 4 MHz] = 220
+P3 PLL0STAT locked = 0x05000022
+P4 PLL0STAT after connect = 0x07000022
+P5 PLL0STAT after disconnect = 0x05000022
+P6 PLL0STAT after disable = 0x00000022
+P7 PLL0STAT right after enable+connect in one feed = 0x01000022
+P8 PLL0STAT 20000 cycles later = 0x07000022
+G1 floating pin, pull-up mode = 1
+G2 floating pin, pull-down mode = 0
+G3 floating pin, no pull (read after a short wait) = 0
+G4 FIOPIN after FIOSET (unmasked) = 1
+G5 FIOPIN of a masked pin = 0
+G6 FIOSET readback after masked FIOCLR (latch kept) = 1
+xy
+U4 LSR right after two THR writes = 0x00000000
+U5 LSR when idle = 0x00000060
+END
